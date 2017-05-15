@@ -1,0 +1,36 @@
+language: ruby
+cache:
+  - bundler
+before_install:
+  - gem update --system
+  - gem install bundler
+matrix:
+  include:
+    - rvm: 2.2.7
+      install: true # This skips 'bundle install'
+      script: gem build github_changelog_generator && gem install *.gem
+    - rvm: 2.2.7
+      install: true # This skips 'bundle install'
+      script: gem build github_changelog_generator && bundle install
+      gemfile: spec/install-gem-in-bundler.gemfile
+    - rvm: 2.1
+    - rvm: 2.3.4
+    - rvm: 2.4.1
+    - rvm: jruby-9.1.8.0
+      jdk: oraclejdk8
+      env:
+        - JRUBY_OPTS=--debug
+    - rvm: jruby-head
+      jdk: oraclejdk8
+      env:
+        - JRUBY_OPTS=--debug
+        - DEBUG=1
+  allow_failures:
+    - rvm: jruby-head
+
+addons:
+  code_climate:
+    repo_token:
+      secure: iMpV5IAvH+/EVGZrpWnt2BnmNFzSbsRcIumsr4ZyLC8N5nrCSXyjCSy0g48btL3Sj0bSgK9hcrJsmrFd2bkqFleyAcPAzNyUQzBuIRZx47O8yFmbZ+Pj+l3+KOlmcbzJNHfDfxkxuWTmTAcSDfsiyApin721T/ey3SUuwKpZNUc=
+after_success:
+  - bundle exec codeclimate-test-reporter
